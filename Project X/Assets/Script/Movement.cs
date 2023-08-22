@@ -1,21 +1,33 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    // PARAMETERS - for tuning, typically set in the editor
+    // CACHE - e.g. references for readability or speed
+    // STATE - private instance (member) variables
+
+
+    [SerializeField] float mainThrust = 100f ;
+    [SerializeField] float rotationThrust = 1f ;
+    [SerializeField] AudioClip mainEngine;    
+    [SerializeField] ParticleSystem mainBoost1;
+    [SerializeField] ParticleSystem mainBoost2;
+    [SerializeField] ParticleSystem mainBoost3;
+    [SerializeField] ParticleSystem leftBooster;
+    [SerializeField] ParticleSystem rightBooster;
+
     Rigidbody rb;
-    [SerializeField] float mainThrust = 25000 ;
-    [SerializeField] float rotationThrust = 5000 ;
-    
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
        rb = GetComponent<Rigidbody>();
+       audioSource = GetComponent<AudioSource>();
     }
-
-    // Update is called once per frame 
    
     void Update()
     { 
@@ -25,28 +37,82 @@ public class Movement : MonoBehaviour
 
     void ProcessThrust() 
     { 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddRelativeForce(mainThrust * Time.deltaTime * Vector3.up);
+            StartThrusting();
         }
-    } 
+        else
+        {
+            StopThrusting();
+        }
+    }
+
+    void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+        }
+        if (!mainBoost1.isPlaying)
+        {
+            mainBoost1.Play();
+            mainBoost2.Play();
+            mainBoost3.Play();
+        }
+    }
+    void StopThrusting()
+    {
+        audioSource.Stop();
+        mainBoost1.Stop();
+        mainBoost2.Stop();
+        mainBoost3.Stop();
+    }
 
     void ProcessRotation()
     {
-        if(Input.GetKeyUp(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(rotationThrust);
+            RotateRight();
         }
-        else if(Input.GetKeyUp(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            ApplyRotation(-rotationThrust);
+            RotateLeft();
         }
+        else
+        {
+            StopRotating();
+        }
+    }
+
+    void RotateLeft()
+    {
+        ApplyRotation(-rotationThrust);
+        if (!rightBooster.isPlaying)
+        {
+            rightBooster.Play();
+        }
+    }
+
+    void RotateRight()
+    {
+        ApplyRotation(rotationThrust);
+        if (!leftBooster.isPlaying)
+        {
+            leftBooster.Play();
+        }
+    }
+
+    void StopRotating()
+    {
+        leftBooster.Stop();
+        rightBooster.Stop();
     }
 
     void ApplyRotation(float rotationThisFrame)
     {
         rb.freezeRotation = true; //Freezing rotation so we can manually rotate
-        transform.Rotate(rotationThisFrame * Time.deltaTime * Vector3.forward);
+        transform.Rotate(Vector3.forward * rotationThisFrame * Time.deltaTime);
         rb.freezeRotation = false; 
     }
 }

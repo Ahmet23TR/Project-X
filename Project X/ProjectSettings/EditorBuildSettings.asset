@@ -4,5 +4,20 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Over.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Under.unity
+    guid: 0815bfa4ce9bd4a46b773c843836a1d9
+  - enabled: 1
+    path: Assets/Scenes/Over&Under.unity
+    guid: 293389ba90b124e499dcbfb33e23a2ba
+  - enabled: 1
+    path: Assets/Scenes/Flappy.unity
+    guid: 0e245ad4f8fa944b6a8ede5b0fc39fb8
+  - enabled: 1
+    path: Assets/Scenes/Acroos.unity
+    guid: 1f9d5f86cbc2046ae9410b6a8138bc67
   m_configObjects: {}
